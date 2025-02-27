@@ -6,14 +6,10 @@ from django.shortcuts import render, redirect
 
 
 def home(request):
-    additional_css = "landing.css"
-
-    return render(request, 'login/home.html', {"additional_css": additional_css})
+    return render(request, 'login/home.html')
 
 
 def login(request):
-    additional_css = "login.css"
-
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
@@ -22,11 +18,34 @@ def login(request):
 
         if user is not None:
             auth_login(request, user)
-            return redirect('home')
+            return redirect('dashboard')
         else:
             return render(request, 'login/login.html', {
-                "additional_css": additional_css,
                 "error": "Usuario o contraseña incorrectos"
             })
 
-    return render(request, 'login/login.html', {"additional_css": additional_css})
+    return render(request, 'login/login.html')
+
+
+def dashboard(request):
+    return render(request, 'dashboard/dashboard.html')
+
+
+def business(request):
+    return render(request, 'dashboard/business/business.html')
+
+
+def business_add(request):
+    return render(request, 'dashboard/business/add.html')
+
+
+def panel(request):
+    return render(request, 'adminlte/panel.html')
+
+
+def clientes(request):
+    return render(request, 'adminlte/clientes.html')
+
+
+def clientes_consultar(request):
+    return render(request, 'adminlte/clientes_consulta.html')
