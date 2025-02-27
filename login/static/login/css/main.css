@@ -75,6 +75,9 @@ button {
 .container.container--sm {
   max-width: 420px;
 }
+.container.container--no-padding {
+  padding: 0;
+}
 
 .parent-padding {
   padding: 2rem;

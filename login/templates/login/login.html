@@ -1,4 +1,6 @@
-{% extends 'login/base.html' %} {% block content %}
+{% extends 'login/base.html' %} {% load static %} {% block css %}
+<link rel="stylesheet" href="{% static 'login/css/login.css' %}" />
+{% endblock %} {% block content %}
 <main class="parent-padding">
   <section class="container container--md form">
     <form method="post" class="login-form">

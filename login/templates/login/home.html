@@ -1,4 +1,6 @@
-{% extends 'login/base.html' %} {% block content %}
+{% extends 'login/base.html' %} {% load static %} {% block css %}
+<link rel="stylesheet" href="{% static 'login/css/landing.css' %}" />
+{% endblock %} {% block content %}
 <main class="parent-padding">
   <section class="container container--sm hero">
     <header class="hero-header">
@@ -18,8 +20,5 @@
       <span class="nav-link__text">Iniciar sesión</span>
     </a>
   </section>
-  {% if user.is_authenticated %}
-  <span>Bienvenido, {{ user.username }}</span>
-  {% endif %}
 </main>
-{% endblock %}
+{% endblock content %}
