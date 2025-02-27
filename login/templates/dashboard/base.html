@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <title>EPDV | Panel De Control</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{% static 'login/css/main.css' %}" />
+    <link rel="stylesheet" href="{% static 'dashboard/css/dashboard.css' %}" />
+    {% block css %} {% endblock %}
+  </head>
+  <body>
+    <main class="container container--no-padding">
+      <section class="panel-menu">
+        <header class="panel-menu__header">
+          <h2 class="panel-menu__heading">
+            <a href="{% url 'dashboard' %}">
+              <span>E.P.D.V.</span>
+              <span>Panel De Control</span>
+            </a>
+          </h2>
+          <button id="panel-menu-btn" type="button" class="panel-menu-btn">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </header>
+        <nav id="panel-nav" class="panel-menu__nav">
+          <a href="{% url 'business' %}">Negocios</a>
+          <a href="#">Usuarios</a>
+          <a href="#">Marcas</a>
+          <a href="#">Clientes</a>
+          <a href="#">Cajas</a>
+          <a href="#">Productos</a>
+          <a href="#">Reportes</a>
+          <a href="#">Cerrar sesión</a>
+        </nav>
+      </section>
+      <section class="parent-padding dashboard-body">
+        {% block content %} {% endblock %}
+      </section>
+    </main>
+
+    <script src="{% static 'login/js/main.js' %}"></script>
+  </body>
+</html>
