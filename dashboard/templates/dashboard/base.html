@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'dashboard/css/styles.css' %}">
+  <title>Panel De Control</title>
+</head>
+<body>
+  <header>
+    <section class="container">
+      <h2>Hola</h2>
+    </section>
+  </header>
+  {% block content %}{% endblock content %}
+  <footer>
+    <section class="container">
+      <h2>Adios</h2>
+    </section>
+  </footer>
+</body>
+</html>

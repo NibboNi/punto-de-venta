@@ -6,7 +6,9 @@
     <header class="home-header">
       <h1>Inicie sesión para continuar</h1>
     </header>
+    {% if error %}<p class="error">{{error}}</p>{% endif %}
     <form action="" method="post" class="form">
+      {% csrf_token %}
       <div>
         <label for="username">Usuario</label>
         <input type="text" id="username" name="username" autocomplete="off">
