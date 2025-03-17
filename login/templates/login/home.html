@@ -1,0 +1,22 @@
+{% extends "login/base.html" %}
+{% load static %}
+{% block content %}
+<main>
+  <section class="container container--flex-col">
+    <header class="home-header">
+      <h1>Inicie sesión para continuar</h1>
+    </header>
+    <form action="" method="post" class="form">
+      <div>
+        <label for="username">Usuario</label>
+        <input type="text" id="username" name="username" autocomplete="off">
+      </div>
+      <div>
+        <label for="password">Contraseña</label>
+        <input type="password" id="password" name="password">
+      </div>
+      <button type="submit" class="btn">Acceder</button>
+    </form>
+  </section>
+</main>
+{% endblock content %}

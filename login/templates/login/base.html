@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'login/css/styles.css' %}">
+  <title>El Punto De Venta</title>
+</head>
+<body>
+  <header>
+    <section class="container header">
+      <h2><a href="{% url 'home' %}" class="heading-link">PDV</a></h2>
+      <nav>
+        <a href="{% url 'home' %}">Iniciar Sesión</a>
+      </nav>
+    </section>
+  </header>
+  {% block content %}{% endblock content %}
+  <footer class="footer">
+    <section class="container">&copy; 2025 - Todos los derechos reservados</section>
+  </footer>
+</body>
+</html>
