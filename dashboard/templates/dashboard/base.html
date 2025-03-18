@@ -5,19 +5,42 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   {% load static %}
   <link rel="stylesheet" href="{% static 'dashboard/css/styles.css' %}">
+  {% block styles %}{% endblock styles %}
   <title>Panel De Control</title>
 </head>
 <body>
-  <header>
-    <section class="container">
-      <h2>Hola</h2>
+  <header class="panel-header-container">
+    <section class="container panel-header">
+      <h2><a href="{% url 'dashboard' %}">PDV</a></h2>
+      <button id="menuBtn" class="menu-btn">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <nav id="headerNav" class="panel-header__nav">
+        <a href="{% url 'users' %}">usuarios</a>
+        <a href="#">negocios</a>
+        <a href="#">reportes</a>
+        <a href="#">ventas</a>
+        <a href="#">productos</a>
+        <a href="{% url 'brands' %}">marcas</a>
+        <a href="{% url 'departments' %}">departamentos</a>
+        <a href="{% url 'sizes' %}">medidas</a>
+        <a href="#">clientes</a>
+        <a href="#">cajas</a>
+        <a href="{% url 'logout' %}">cerrar sesión</a>
+      </nav>
     </section>
   </header>
   {% block content %}{% endblock content %}
-  <footer>
+  <footer class="footer">
     <section class="container">
-      <h2>Adios</h2>
+      <p>&copy; 2025 - Todos los derechos reservados</p>
     </section>
   </footer>
+
+  <script src="{% static 'dashboard/js/app.js' %}"></script>
+  <script src="{% static 'dashboard/js/command.js' %}"></script>
+  {% block scripts %}{% endblock scripts %}
 </body>
 </html>

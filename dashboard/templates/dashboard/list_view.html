@@ -1,0 +1,51 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'dashboard/css/list_items.css' %}">
+<link rel="stylesheet" href="{% static 'dashboard/css/tables.css' %}">
+<link rel="stylesheet" href="{% static 'dashboard/css/modal.css' %}">
+{% endblock styles %}
+{% block content %}
+<main>
+  <section class="container">
+    <header class="list-header">
+      <div>
+        <h1>{% block title %}{% endblock title %}</h1>
+        <a href="{% url 'dashboard' %}" class="back">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <title>regresar</title>
+            <path d="M10.05 16.94V12.94H18.97L19 10.93H10.05V6.94L5.05 11.94Z" />
+          </svg>
+          <span>
+            Regresar
+          </span>
+        </a>
+      </div>
+      {% block to_form %}{% endblock to_form %}
+    </header>
+    <article>
+      <header class="list-table-header">
+        <ul>
+          <li><p>{% block main_field %}{% endblock main_field %}</p></li>
+          <li><p>Acciones</p></li>
+        </ul>
+      </header>
+      <ul class="list-table">
+        {% block models %}{% endblock models %}
+      </ul>
+    </article>
+  </section>
+</main>
+<div id="modal-container">
+  <div id="modal">
+    {% block modal_msg %}{% endblock modal_msg %}
+    <div class="modal-btns">
+      <button id="cancelBtn" type="button">No, no borrar</button>
+      {% block delete_btn %}{% endblock delete_btn %}
+    </div>
+  </div>
+</div>
+{% endblock content %}
+{% block scripts %}
+<script src="{% static 'dashboard/js/actions.js' %}"></script>
+{% endblock scripts %}

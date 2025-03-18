@@ -1,0 +1,9 @@
+{% extends "dashboard/form_view.html" %}
+{% block back %}<a href="{% url 'users' %}">Regresar</a>{% endblock back %}
+{% block form %}
+  {{user_form}}
+  {{profile_form}}
+  {{contact_form}}
+  {{address_form}}
+  {{legal_data_form}}
+{% endblock form %}

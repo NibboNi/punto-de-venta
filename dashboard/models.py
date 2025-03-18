@@ -1,3 +1,99 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
+
+
+class Contact(models.Model):
+    phone = models.CharField(max_length=15, verbose_name="teléfono")
+    cellphone = models.CharField(max_length=15, verbose_name="celular")
+    email = models.EmailField()
+    social_url = models.URLField(
+        verbose_name="url social", null=True, blank=True)
+
+    def __str__(self):
+        return "Contacto"
+
+
+class Address(models.Model):
+    street = models.CharField(
+        max_length=255, verbose_name="calle", null=False, blank=False)
+    exterior_num = models.CharField(
+        max_length=50, verbose_name="número ext.", null=False, blank=False)
+    interior_num = models.CharField(
+        max_length=50, null=True, blank=True, verbose_name="número int.")
+    colony = models.CharField(
+        max_length=255, verbose_name="colonia", null=False, blank=False)
+    city = models.CharField(
+        max_length=255, verbose_name="ciudad", null=False, blank=False)
+    state = models.CharField(
+        max_length=255, verbose_name="estado", null=False, blank=False)
+    postal_code = models.CharField(
+        max_length=10, verbose_name="codigo postal", null=False, blank=False)
+
+    def __str__(self):
+        return f"{self.street} {self.exterior_num}, {self.colony}, {self.city}"
+
+
+class LegalData(models.Model):
+    rfc = models.CharField(max_length=13, unique=True)
+    company_name = models.CharField(
+        max_length=255, verbose_name="razón social")
+    address = models.ForeignKey(
+        Address, on_delete=models.CASCADE, default=0)
+
+    def __str__(self):
+        return f"{self.company_name} - {self.rfc}"
+
+
+class Profile(models.Model):
+    USER_TYPES = [
+        ("admin", "Administrador"),
+        ("vendedor", "Vendedor"),
+    ]
+
+    USER_GENDERS = [
+        ("m", "masculino"),
+        ("f", "femenino"),
+    ]
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    type = models.CharField(
+        max_length=20, choices=USER_TYPES, default="vendedor", verbose_name="tipo")
+    name = models.CharField(
+        max_length=20, verbose_name="nombre", default="", blank=False)
+    surnames = models.CharField(
+        max_length=100, verbose_name="apellidos", default="", blank=False)
+    gender = models.CharField(
+        max_length=20, choices=USER_GENDERS, default="m", verbose_name="género")
+    contact = models.ForeignKey(
+        Contact, on_delete=models.SET_NULL, null=True, blank=True)
+    legal_data = models.ForeignKey(
+        LegalData, on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        return self.user.username
+
+
+class Brand(models.Model):
+    name = models.CharField(
+        max_length=100, verbose_name="nombre", null=False, blank=False,)
+
+    def __str__(self):
+        return self.name
+
+
+class Department(models.Model):
+    name = models.CharField(
+        max_length=100, verbose_name="nombre", null=False, blank=False,)
+
+    def __str__(self):
+        return self.name
+
+
+class Size(models.Model):
+    name = models.CharField(
+        max_length=100, verbose_name="nombre", null=False, blank=False,)
+
+    def __str__(self):
+        return self.name

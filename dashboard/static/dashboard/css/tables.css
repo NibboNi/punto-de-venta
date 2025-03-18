@@ -1,0 +1,63 @@
+.list-table-header {
+  ul {
+    list-style: none;
+    display: flex;
+
+    li {
+      padding: 0.5rem 1rem;
+      &:first-child {
+        width: 100%;
+      }
+    }
+  }
+}
+
+.list-table {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+
+  .list-table-item {
+    padding: 0.5rem 1rem;
+    display: flex;
+    align-items: center;
+
+    &:nth-child(even) {
+      background-color: rgba(0, 0, 0, 0.2);
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.4);
+      }
+    }
+
+    &:nth-child(odd) {
+      background-color: rgba(0, 0, 0, 0);
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.1);
+      }
+    }
+
+    &:last-child {
+      border-radius: 0 0 1rem 1rem;
+    }
+
+    .main-field {
+      width: 100%;
+    }
+
+    .list-table-actions {
+      display: flex;
+      gap: 1rem;
+
+      .list-table-btn {
+        height: 2.4rem;
+        width: 2.4rem;
+        fill: white;
+        opacity: 0.5;
+
+        &:hover {
+          opacity: 1;
+        }
+      }
+    }
+  }
+}
