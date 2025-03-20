@@ -5,7 +5,7 @@ const deleteBtn = document.querySelector("#deleteBtn");
 deleteBtns.forEach((btn) => {
   btn.addEventListener("click", () => {
     modalContainerEl.classList.toggle("open");
-    deleteBtn.href = deleteBtn.href.slice(0, -1) + btn.id;
+    deleteBtn.href = deleteBtn.href.slice(0, -2) + btn.id;
   });
 });
 

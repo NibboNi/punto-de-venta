@@ -51,3 +51,15 @@ class SizeForm(forms.ModelForm):
     class Meta:
         model = Size
         fields = ["name"]
+
+
+class RegisterForm(forms.ModelForm):
+    class Meta:
+        model = Register
+        fields = ["key", "name"]
+
+
+class RegisterSessionForm(forms.ModelForm):
+    class Meta:
+        model = RegisterSession
+        fields = ["total_sold", "initial_amount"]

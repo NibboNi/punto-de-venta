@@ -2,8 +2,11 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth import logout
+from django.utils import timezone
+from django.contrib import messages
 from .models import *
 from .forms import *
+
 
 # Create your views here.
 
@@ -197,3 +200,120 @@ def sizes_manage(request, pk=None):
     context = {"size_form": size_form}
 
     return render(request, 'dashboard/sizes/form.html', context)
+
+
+@login_required
+def registers(request):
+    registers = Register.objects.all()
+
+    context = {
+        "registers": registers,
+    }
+
+    return render(request, "dashboard/registers/read.html", context)
+
+
+@login_required
+def registers_manage(request, pk=None):
+    if pk:
+        register = Register.objects.get(id=pk)
+        if "borrar" in request.path:
+            register.delete()
+            return redirect("registers")
+    else:
+        register = None
+
+    if request.method == "POST":
+        register_form = RegisterForm(request.POST, instance=register)
+
+        if register_form.is_valid():
+            register = register_form.save()
+
+            return redirect("registers")
+        else:
+            print(register_form.errors)
+    else:
+        register_form = RegisterForm(instance=register)
+
+    context = {"register_form": register_form}
+
+    return render(request, "dashboard/registers/form.html", context)
+
+
+@login_required
+def registers_open(request, pk):
+    register = Register.objects.get(id=pk)
+    register_session = None
+
+    if RegisterSession.objects.filter(user=request.user, closed_at__isnull=True).exists():
+        messages.error(request, "Ya tiene una caja abierta.")
+        messages.error(request, "Cierre su caja antes de abrir otra.")
+        return redirect("registers")
+
+    if request.method == "POST":
+        register_form = RegisterSessionForm(request.POST, instance=register)
+        register_session_form = RegisterSessionForm(
+            request.POST, instance=register_session)
+
+        if register_form.is_valid() and register_session_form.is_valid():
+            register = register_form.save(commit=False)
+            register_session = register_session_form.save(commit=False)
+
+            register.state = "a"
+            register.save()
+
+            register_session.user = request.user
+            register_session.register = register
+            register_session.save()
+
+            return redirect("registers")
+        else:
+            print(register_form.errors)
+            print(register_session_form.errors)
+    else:
+        register_form = RegisterForm(instance=register)
+        register_session_form = RegisterSessionForm()
+
+    context = {
+        "register_form": register_form,
+        "register_session_form": register_session_form,
+    }
+
+    return render(request, "dashboard/registers/open.html", context)
+
+
+@login_required
+def registers_close(request, pk):
+    register = Register.objects.get(id=pk)
+    register_session = RegisterSession.objects.get(
+        register=register, closed_at__isnull=True)
+
+    if register_session.user != request.user:
+        messages.error(request, "Esta caja no fue abierta por usted.")
+        return redirect("registers")
+
+    form = RegisterSessionForm(request.POST or None, instance=register_session)
+    if request.method == "POST":
+        if form.is_valid():
+            register_session = form.save(commit=False)
+            register_session.closed_at = timezone.now()
+
+            total_sold = register_session.total_sold or 0
+            register_session.final_balance = register_session.initial_amount + total_sold
+
+            register_session.save()
+
+            register.state = "c"
+            register.save()
+
+            return redirect("registers")
+        else:
+            print(form.errors)
+
+    context = {
+        "register": register,
+        "register_session": register_session,
+        "form": form,
+    }
+
+    return render(request, "dashboard/registers/close.html", context)

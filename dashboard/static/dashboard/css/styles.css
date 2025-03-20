@@ -71,7 +71,7 @@ a {
 }
 @media (min-width: 1024px) {
   .container {
-    padding-left: 20rem;
+    padding-left: 22rem;
   }
 }
 .container.container--flex-col {
@@ -111,6 +111,9 @@ a {
     a {
       padding: 0.8rem 1.6rem;
       width: 100%;
+      display: flex;
+      align-items: flex-end;
+      gap: 0.6rem;
       text-align: center;
       border-radius: 0.8rem;
       text-align: right;
@@ -119,6 +122,21 @@ a {
 
       &:hover {
         background-color: rgba(255, 255, 255, 0.04);
+      }
+
+      svg {
+        width: 2.4rem;
+        display: none;
+        fill: white;
+      }
+    }
+
+    .logout {
+      flex-direction: column;
+      span {
+        &:first-child {
+          display: none;
+        }
       }
     }
   }
@@ -136,7 +154,7 @@ a {
     .panel-header {
       margin: 0;
       padding: 0;
-      width: 18rem;
+      width: 20rem;
       position: fixed;
       top: 0;
       left: calc(50% - 100% / 2);
@@ -160,11 +178,25 @@ a {
         border-right: 1px solid rgba(255, 255, 255, 0.2);
 
         a {
-          font-size: 1.8rem;
           text-align: left;
 
           &:last-child {
             margin-top: auto;
+          }
+
+          svg {
+            display: flex;
+          }
+        }
+
+        .logout {
+          align-items: flex-start;
+          font-size: 1.8rem;
+          span {
+            &:first-child {
+              display: flex;
+              font-size: 1.4rem;
+            }
           }
         }
       }

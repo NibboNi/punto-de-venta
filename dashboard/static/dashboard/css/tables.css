@@ -61,3 +61,14 @@
     }
   }
 }
+
+.btn-table {
+  padding: 0.6rem 1.2rem;
+  color: white;
+  font-weight: 500;
+  text-align: center;
+}
+
+.secondary-field {
+  width: 100%;
+}

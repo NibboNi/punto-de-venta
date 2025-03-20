@@ -1,0 +1,32 @@
+.toggle-state-btn {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  span {
+    &:first-child {
+      transition: opacity 0.3s ease-in-out;
+    }
+
+    &:last-child {
+      width: 100%;
+      position: absolute;
+      top: -100%;
+      left: 0;
+      transition: top 0.3s ease-in-out;
+    }
+  }
+
+  &:hover {
+    span {
+      &:first-child {
+        opacity: 0;
+      }
+
+      &:last-child {
+        top: 0;
+      }
+    }
+  }
+}

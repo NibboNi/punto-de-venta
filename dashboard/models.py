@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.timezone import now
 
 # Create your models here.
 
@@ -97,3 +98,40 @@ class Size(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Register(models.Model):
+    REGISTER_STATES = [
+        ("a", "abierto"),
+        ("c", "cerrado"),
+    ]
+
+    key = models.CharField(
+        max_length=3, verbose_name="clave", null=False, blank=False, unique=True)
+    name = models.CharField(
+        max_length=100, verbose_name="nombre", null=False, blank=False,)
+    state = models.CharField(
+        max_length=20, choices=REGISTER_STATES, default="c", verbose_name="estado")
+
+    def __str__(self):
+        return self.name
+
+
+class RegisterSession(models.Model):
+    register = models.ForeignKey(
+        Register, on_delete=models.CASCADE, verbose_name="Caja")
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, verbose_name="usuario", default="")
+    closed_at = models.DateTimeField(
+        null=True, blank=True, verbose_name="Fecha y hora de cierre")
+    opened_at = models.DateTimeField(
+        default=now, verbose_name="Fecha y hora de apertura")
+    initial_amount = models.DecimalField(
+        max_digits=10, decimal_places=2, verbose_name="Monto inicial")
+    total_sold = models.DecimalField(
+        max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Total vendido")
+    final_balance = models.DecimalField(
+        max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Saldo final")
+
+    def __str__(self):
+        return self.register.name

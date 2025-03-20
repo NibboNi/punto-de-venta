@@ -22,4 +22,10 @@ urlpatterns = [
     path('medidas/crear/', sizes_manage, name="sizes_create"),
     path('medidas/editar/<int:pk>/', sizes_manage, name="sizes_edit"),
     path('medidas/borrar/<int:pk>/', sizes_manage, name="sizes_delete"),
+    path('cajas/', registers, name="registers"),
+    path('cajas/crear/', registers_manage, name="registers_create"),
+    path('cajas/editar/<int:pk>/', registers_manage, name="registers_edit"),
+    path('cajas/borrar/<int:pk>/', registers_manage, name="registers_delete"),
+    path('cajas/abrir/<int:pk>/', registers_open, name="registers_open"),
+    path('cajas/cerrar/<int:pk>/', registers_close, name="registers_close"),
 ]

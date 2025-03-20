@@ -1,0 +1,18 @@
+{% extends "dashboard/form_view.html" %}
+{% block back %}<a href="{% url 'registers' %}">Regresar</a>{% endblock back %}
+{% block info %}
+<div>
+  <header>Cerrando {{register.name}}</header>
+</div>
+{% endblock info %}
+{% block form %}
+<div style="display:none">
+  <label for="id_initial_amount">Monto inicial:</label>
+  <input type="text" id="id_initial_amount" name="initial_amount" value="{{ form.initial_amount.value }}" readonly>
+</div>
+<div>
+  <label for="id_total_sold">Total vendido:</label>
+  {{form.total_sold}}
+</div>
+{% endblock form %}
+{% block form_btn %}Cerrar{% endblock form_btn %}

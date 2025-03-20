@@ -1,0 +1,10 @@
+{% extends "dashboard/form_view.html" %}
+{% block back %}<a href="{% url 'registers' %}">Regresar</a>{% endblock back %}
+{% block form %}
+  <div>
+    <label for="id_initial_amount">Monto inicial:</label>
+    {{register_session_form.initial_amount}}
+    <p class="helptext">Esta caja sera abierta por usted ({{request.user}})</p>
+  </div>
+{% endblock form %}
+{% block form_btn %}Abrir{% endblock form_btn %}

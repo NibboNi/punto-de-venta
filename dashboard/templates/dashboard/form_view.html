@@ -16,10 +16,11 @@
       </h2>
     </header>
     <article>
+      {% block info %}{% endblock info %}
       <form action="" method="post" class="form">
         {% csrf_token %}
         {% block form %}{% endblock form %}
-        <button type="submit" class="btn-submit">Guardar</button>
+        <button type="submit" class="btn-submit">{% block form_btn %}Guardar{% endblock form_btn %}</button>
       </form>
     </article>
   </section>
