@@ -48,7 +48,15 @@ class LegalData(models.Model):
 
 
 class Business(models.Model):
-    # Formularios multiples
+    legal_data = models.ForeignKey(
+        LegalData, on_delete=models.CASCADE, null=True)
+    contact = models.ForeignKey(
+        Contact, on_delete=models.CASCADE, null=True)
+    name = models.CharField(
+        max_length=100, verbose_name="nombre", null=False, blank=False,)
+
+
+class Client(models.Model):
     legal_data = models.ForeignKey(
         LegalData, on_delete=models.CASCADE, null=True)
     contact = models.ForeignKey(

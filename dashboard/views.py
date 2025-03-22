@@ -444,3 +444,73 @@ def businesses_manage(request, pk=None):
                "business_form": business_form, "legal_data_form": legal_data_form}
 
     return render(request, 'dashboard/businesses/form.html', context)
+
+
+@login_required
+def clients(request):
+    if request.user.profile.type == "vendedor":
+        return redirect("dashboard")
+
+    items = Client.objects.all()
+    context = {"items": items, "title": "cliente"}
+    return render(request, "dashboard/clients/read.html", context)
+
+
+@login_required
+def clients_manage(request, pk=None):
+    if request.user.profile.type == "vendedor":
+        return redirect("dashboard")
+
+    if pk:
+        client = Client.objects.get(id=pk)
+        contact = client.contact
+        legal_data = client.legal_data
+        address = client.address
+
+        if "borrar" in request.path:
+            client.delete()
+            return redirect("clients")
+    else:
+        client = None
+        contact = None
+        legal_data = None
+        address = None
+
+    if request.method == "POST":
+        client_form = ClientForm(request.POST, instance=client)
+        contact_form = ContactForm(request.POST, instance=contact)
+        address_form = AddressForm(request.POST, instance=address)
+        legal_data_form = LegalDataForm(request.POST, instance=legal_data)
+
+        if client_form.is_valid() and contact_form.is_valid() and address_form.is_valid() and legal_data_form.is_valid():
+            client = client_form.save(commit=False)
+
+            contact = contact_form.save()
+            address = address_form.save()
+
+            legal_data = legal_data_form.save(commit=False)
+            legal_data.address = address
+            legal_data.save()
+
+            client.contact = contact
+            client.legal_data = legal_data
+
+            client.save()
+
+            return redirect("clients")
+        else:
+            print(client_form.errors)
+            print(contact_form.errors)
+            print(address_form.errors)
+            print(legal_data_form.errors)
+
+    else:
+        address_form = AddressForm(instance=address)
+        legal_data_form = LegalDataForm(instance=legal_data)
+        contact_form = ContactForm(instance=contact)
+        client_form = ClientForm(instance=client)
+
+    context = {"address_form": address_form, "contact_form": contact_form,
+               "client_form": client_form, "legal_data_form": legal_data_form}
+
+    return render(request, 'dashboard/clients/form.html', context)

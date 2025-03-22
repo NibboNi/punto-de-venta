@@ -36,4 +36,8 @@ urlpatterns = [
     path('negocios/crear/', businesses_manage, name="businesses_create"),
     path('negocios/editar/<int:pk>/', businesses_manage, name="businesses_edit"),
     path('negocios/borrar/<int:pk>/', businesses_manage, name="businesses_delete"),
+    path('clientes/', clients, name="clients"),
+    path('clientes/crear/', clients_manage, name="clients_create"),
+    path('clientes/editar/<int:pk>/', clients_manage, name="clients_edit"),
+    path('clientes/borrar/<int:pk>/', clients_manage, name="clients_delete"),
 ]

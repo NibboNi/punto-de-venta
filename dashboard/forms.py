@@ -32,7 +32,13 @@ class LegalDataForm(forms.ModelForm):
 class BusinessForm(forms.ModelForm):
     class Meta:
         model = Business
-        fields = ["name",]
+        fields = ["name"]
+
+
+class ClientForm(forms.ModelForm):
+    class Meta:
+        model = Client
+        fields = ["name"]
 
 
 class ProfileForm(forms.ModelForm):
