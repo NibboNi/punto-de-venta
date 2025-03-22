@@ -23,14 +23,18 @@
           </span>
         </a>
       </div>
+      {% if user.profile.type == "admin" %}
       {% block to_form %}{% endblock to_form %}
+      {% endif %}
     </header>
     <article>
       <header class="list-table-header">
         <ul>
           <li><p>{% block main_field %}{% endblock main_field %}</p></li>
           {% block headers %}{% endblock headers %}
-          <li><p>Acciones</p></li>
+          {% if user.profile.type == "admin" %}
+            <li><p>Acciones</p></li>
+          {% endif %}
         </ul>
       </header>
       <ul class="list-table">

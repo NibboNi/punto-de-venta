@@ -28,6 +28,7 @@
           </a>
         {% endif %}
       </p>
+      {% if user.profile.type == "admin" %}
       <div class="list-table-actions">
         <button id="{{r.id}}" type="button" class="delete-btn list-table-btn">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -42,6 +43,7 @@
           </svg>
         </a>
       </div>
+      {% endif %}
     </li>
   {% endfor %}
 {% endblock models %}

@@ -18,12 +18,18 @@ def home(request):
 
 @login_required
 def users(request):
+    if request.user.profile.type == "vendedor":
+        return redirect("dashboard")
+
     users = User.objects.all()
     return render(request, 'dashboard/users/read.html', {"users": users})
 
 
 @login_required
 def users_manage(request, pk=None):
+    if request.user.profile.type == "vendedor":
+        return redirect("dashboard")
+
     if pk:
         user = User.objects.get(id=pk)
         profile = Profile.objects.get(user=user)
@@ -96,18 +102,17 @@ def signout(request):
 
 @login_required
 def brands(request):
-    brands = Brand.objects.all()
-    return render(request, 'dashboard/brands/read.html', {"brands": brands})
+    if request.user.profile.type == "vendedor":
+        return redirect("dashboard")
 
-
-@login_required
-def brands(request):
     brands = Brand.objects.all()
     return render(request, 'dashboard/brands/read.html', {"brands": brands})
 
 
 @login_required
 def brands_manage(request, pk=None):
+    if request.user.profile.type == "vendedor":
+        return redirect("dashboard")
 
     if pk:
         brand = Brand.objects.get(id=pk)
@@ -136,12 +141,15 @@ def brands_manage(request, pk=None):
 
 @login_required
 def departments(request):
+
     departments = Department.objects.all()
     return render(request, 'dashboard/departments/read.html', {"departments": departments})
 
 
 @login_required
 def departments_manage(request, pk=None):
+    if request.user.profile.type == "vendedor":
+        return redirect("dashboard")
 
     if pk:
         department = Department.objects.get(id=pk)
@@ -170,12 +178,17 @@ def departments_manage(request, pk=None):
 
 @login_required
 def sizes(request):
+    if request.user.profile.type == "vendedor":
+        return redirect("dashboard")
+
     sizes = Size.objects.all()
     return render(request, 'dashboard/sizes/read.html', {"sizes": sizes})
 
 
 @login_required
 def sizes_manage(request, pk=None):
+    if request.user.profile.type == "vendedor":
+        return redirect("dashboard")
 
     if pk:
         size = Size.objects.get(id=pk)
