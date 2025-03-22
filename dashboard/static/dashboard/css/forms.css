@@ -30,7 +30,8 @@
     }
 
     input,
-    select {
+    select,
+    textarea {
       margin-top: 0.5rem;
       padding: 0.4rem 0.8rem;
       color: white;
@@ -44,6 +45,10 @@
         color: black;
         background-color: #ececec;
       }
+    }
+
+    textarea {
+      resize: vertical;
     }
 
     .helptext {

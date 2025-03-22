@@ -28,4 +28,8 @@ urlpatterns = [
     path('cajas/borrar/<int:pk>/', registers_manage, name="registers_delete"),
     path('cajas/abrir/<int:pk>/', registers_open, name="registers_open"),
     path('cajas/cerrar/<int:pk>/', registers_close, name="registers_close"),
+    path('productos/', products, name="products"),
+    path('productos/crear/', products_manage, name="products_create"),
+    path('productos/editar/<int:pk>/', products_manage, name="products_edit"),
+    path('productos/borrar/<int:pk>/', products_manage, name="products_delete"),
 ]

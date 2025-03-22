@@ -100,6 +100,24 @@ class Size(models.Model):
         return self.name
 
 
+class Product(models.Model):
+    name = models.CharField(
+        max_length=100, verbose_name="nombre", null=False, blank=False)
+    description = models.TextField(
+        verbose_name="descripción", max_length=200, blank=True, null=True)
+    existence = models.IntegerField(verbose_name="existencia", default=1)
+    existence_min = models.IntegerField(
+        verbose_name="existencia mínima", default=1)
+    sale_price = models.DecimalField(
+        max_digits=10, decimal_places=2, default=1.00, verbose_name="precio de venta")
+    brand = models.ForeignKey(
+        Brand, on_delete=models.CASCADE, verbose_name="marca")
+    department = models.ForeignKey(
+        Department, on_delete=models.CASCADE, default=1, verbose_name="departamento")
+    size = models.ForeignKey(
+        Size, on_delete=models.CASCADE, default=1, verbose_name="unidad de medida")
+
+
 class Register(models.Model):
     REGISTER_STATES = [
         ("a", "abierto"),

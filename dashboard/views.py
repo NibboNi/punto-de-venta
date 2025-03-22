@@ -330,3 +330,68 @@ def registers_close(request, pk):
     }
 
     return render(request, "dashboard/registers/close.html", context)
+
+
+@login_required
+def products(request):
+    if request.user.profile.type == "vendedor":
+        return redirect("dashboard")
+
+    products = Product.objects.all()
+    return render(request, "dashboard/products/read.html", {"products": products})
+
+
+@login_required
+def products_manage(request, pk=None):
+    if request.user.profile.type == "vendedor":
+        return redirect("dashboard")
+
+    if pk:
+        product = Product.objects.get(id=pk)
+        brand = product.brand
+        department = product.department
+        size = product.size
+        if "borrar" in request.path:
+            product.delete()
+            return redirect("products")
+    else:
+        product = None
+        brand = None
+        department = None
+        size = None
+
+    if request.method == "POST":
+        product_form = ProductForm(request.POST, instance=product)
+        brand_form = BrandForm(request.POST, instance=brand)
+        department_form = DepartmentForm(request.POST, instance=department)
+        size_form = SizeForm(request.POST, instance=size)
+
+        if product_form.is_valid() and brand_form.is_valid() and department_form.is_valid() and size_form.is_valid():
+            product = product_form.save(commit=False)
+
+            brand = brand_form.save()
+            department = department_form.save()
+            size = size_form.save()
+
+            product.brand = brand
+            product.department = department
+            product.size = size
+
+            product.save()
+
+            return redirect("products")
+        else:
+            print(product_form.errors)
+            print(brand_form.errors)
+            print(department_form.errors)
+            print(size_form.errors)
+    else:
+        product_form = ProductForm(instance=product)
+        brand_form = BrandForm(instance=brand)
+        department_form = DepartmentForm(instance=department)
+        size_form = SizeForm(instance=size)
+
+    context = {"product_form": product_form, "brand_form": brand_form,
+               "department_form": department_form, "size_form": size_form}
+
+    return render(request, 'dashboard/products/form.html', context)

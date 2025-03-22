@@ -63,3 +63,15 @@ class RegisterSessionForm(forms.ModelForm):
     class Meta:
         model = RegisterSession
         fields = ["total_sold", "initial_amount"]
+
+
+class ProductForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = ["name", "description", "existence", "existence_min",
+                  "sale_price", "brand", "department", "size"]
+        widgets = {
+            "brand": forms.Select(),
+            "department": forms.Select(),
+            "size": forms.Select(),
+        }
