@@ -47,6 +47,16 @@ class LegalData(models.Model):
         return f"{self.company_name} - {self.rfc}"
 
 
+class Business(models.Model):
+    # Formularios multiples
+    legal_data = models.ForeignKey(
+        LegalData, on_delete=models.CASCADE, null=True)
+    contact = models.ForeignKey(
+        Contact, on_delete=models.CASCADE, null=True)
+    name = models.CharField(
+        max_length=100, verbose_name="nombre", null=False, blank=False,)
+
+
 class Profile(models.Model):
     USER_TYPES = [
         ("admin", "Administrador"),

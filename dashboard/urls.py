@@ -32,4 +32,8 @@ urlpatterns = [
     path('productos/crear/', products_manage, name="products_create"),
     path('productos/editar/<int:pk>/', products_manage, name="products_edit"),
     path('productos/borrar/<int:pk>/', products_manage, name="products_delete"),
+    path('negocios/', businesses, name="businesses"),
+    path('negocios/crear/', businesses_manage, name="businesses_create"),
+    path('negocios/editar/<int:pk>/', businesses_manage, name="businesses_edit"),
+    path('negocios/borrar/<int:pk>/', businesses_manage, name="businesses_delete"),
 ]

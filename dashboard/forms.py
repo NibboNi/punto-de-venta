@@ -29,6 +29,12 @@ class LegalDataForm(forms.ModelForm):
         fields = ["rfc", "company_name"]
 
 
+class BusinessForm(forms.ModelForm):
+    class Meta:
+        model = Business
+        fields = ["name",]
+
+
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile

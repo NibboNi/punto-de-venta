@@ -21,8 +21,9 @@ def users(request):
     if request.user.profile.type == "vendedor":
         return redirect("dashboard")
 
-    users = User.objects.all()
-    return render(request, 'dashboard/users/read.html', {"users": users})
+    items = User.objects.all()
+    context = {"items": items, "title": "usuario"}
+    return render(request, 'dashboard/users/read.html', context)
 
 
 @login_required
@@ -105,8 +106,9 @@ def brands(request):
     if request.user.profile.type == "vendedor":
         return redirect("dashboard")
 
-    brands = Brand.objects.all()
-    return render(request, 'dashboard/brands/read.html', {"brands": brands})
+    items = Brand.objects.all()
+    context = {"items": items, "title": "marca"}
+    return render(request, 'dashboard/brands/read.html', context)
 
 
 @login_required
@@ -141,9 +143,12 @@ def brands_manage(request, pk=None):
 
 @login_required
 def departments(request):
+    if request.user.profile.type == "vendedor":
+        return redirect("dashboard")
 
-    departments = Department.objects.all()
-    return render(request, 'dashboard/departments/read.html', {"departments": departments})
+    items = Department.objects.all()
+    context = {"items": items, "title": "departamento"}
+    return render(request, 'dashboard/departments/read.html', context)
 
 
 @login_required
@@ -181,8 +186,9 @@ def sizes(request):
     if request.user.profile.type == "vendedor":
         return redirect("dashboard")
 
-    sizes = Size.objects.all()
-    return render(request, 'dashboard/sizes/read.html', {"sizes": sizes})
+    items = Size.objects.all()
+    context = {"items": items, "title": "medida"}
+    return render(request, 'dashboard/sizes/read.html', context)
 
 
 @login_required
@@ -217,12 +223,8 @@ def sizes_manage(request, pk=None):
 
 @login_required
 def registers(request):
-    registers = Register.objects.all()
-
-    context = {
-        "registers": registers,
-    }
-
+    items = Register.objects.all()
+    context = {"items": items, "title": "caja"}
     return render(request, "dashboard/registers/read.html", context)
 
 
@@ -337,8 +339,9 @@ def products(request):
     if request.user.profile.type == "vendedor":
         return redirect("dashboard")
 
-    products = Product.objects.all()
-    return render(request, "dashboard/products/read.html", {"products": products})
+    items = Product.objects.all()
+    context = {"items": items, "title": "producto"}
+    return render(request, "dashboard/products/read.html", context)
 
 
 @login_required
@@ -348,50 +351,96 @@ def products_manage(request, pk=None):
 
     if pk:
         product = Product.objects.get(id=pk)
-        brand = product.brand
-        department = product.department
-        size = product.size
         if "borrar" in request.path:
             product.delete()
             return redirect("products")
     else:
         product = None
-        brand = None
-        department = None
-        size = None
 
     if request.method == "POST":
         product_form = ProductForm(request.POST, instance=product)
-        brand_form = BrandForm(request.POST, instance=brand)
-        department_form = DepartmentForm(request.POST, instance=department)
-        size_form = SizeForm(request.POST, instance=size)
 
-        if product_form.is_valid() and brand_form.is_valid() and department_form.is_valid() and size_form.is_valid():
+        if product_form.is_valid():
             product = product_form.save(commit=False)
-
-            brand = brand_form.save()
-            department = department_form.save()
-            size = size_form.save()
-
-            product.brand = brand
-            product.department = department
-            product.size = size
-
             product.save()
 
             return redirect("products")
         else:
             print(product_form.errors)
-            print(brand_form.errors)
-            print(department_form.errors)
-            print(size_form.errors)
+
     else:
         product_form = ProductForm(instance=product)
-        brand_form = BrandForm(instance=brand)
-        department_form = DepartmentForm(instance=department)
-        size_form = SizeForm(instance=size)
 
-    context = {"product_form": product_form, "brand_form": brand_form,
-               "department_form": department_form, "size_form": size_form}
+    context = {"product_form": product_form}
 
     return render(request, 'dashboard/products/form.html', context)
+
+
+@login_required
+def businesses(request):
+    if request.user.profile.type == "vendedor":
+        return redirect("dashboard")
+
+    items = Business.objects.all()
+    context = {"items": items, "title": "negocio"}
+    return render(request, "dashboard/businesses/read.html", context)
+
+
+@login_required
+def businesses_manage(request, pk=None):
+    if request.user.profile.type == "vendedor":
+        return redirect("dashboard")
+
+    if pk:
+        business = Business.objects.get(id=pk)
+        contact = business.contact
+        legal_data = business.legal_data
+        address = legal_data.address
+
+        if "borrar" in request.path:
+            business.delete()
+            return redirect("businesses")
+    else:
+        business = None
+        contact = None
+        legal_data = None
+        address = None
+
+    if request.method == "POST":
+        business_form = BusinessForm(request.POST, instance=business)
+        contact_form = ContactForm(request.POST, instance=contact)
+        address_form = AddressForm(request.POST, instance=address)
+        legal_data_form = LegalDataForm(request.POST, instance=legal_data)
+
+        if business_form.is_valid() and contact_form.is_valid() and address_form.is_valid() and legal_data_form.is_valid():
+            business = business_form.save(commit=False)
+
+            contact = contact_form.save()
+            address = address_form.save()
+
+            legal_data = legal_data_form.save(commit=False)
+            legal_data.address = address
+            legal_data.save()
+
+            business.contact = contact
+            business.legal_data = legal_data
+
+            business.save()
+
+            return redirect("businesses")
+        else:
+            print(business_form.errors)
+            print(contact_form.errors)
+            print(address_form.errors)
+            print(legal_data_form.errors)
+
+    else:
+        address_form = AddressForm(instance=address)
+        legal_data_form = LegalDataForm(instance=legal_data)
+        contact_form = ContactForm(instance=contact)
+        business_form = BusinessForm(instance=business)
+
+    context = {"address_form": address_form, "contact_form": contact_form,
+               "business_form": business_form, "legal_data_form": legal_data_form}
+
+    return render(request, 'dashboard/businesses/form.html', context)
