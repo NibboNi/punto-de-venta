@@ -245,7 +245,7 @@ confirmSaleBtn.addEventListener("click", (e) => {
     sale.products.length > 0 &&
     sale.total >= 0
   ) {
-    fetch("/panel/ventas/crear", {
+    fetch("/panel/ventas/crear/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
