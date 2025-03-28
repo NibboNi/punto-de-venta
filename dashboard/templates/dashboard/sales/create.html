@@ -1,0 +1,99 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'dashboard/css/list_items.css' %}">
+<link rel="stylesheet" href="{% static 'dashboard/css/forms.css' %}">
+<link rel="stylesheet" href="{% static 'dashboard/css/sales.css' %}">
+{% endblock styles %}
+{% block content %}
+<main class="container">
+  <header class="list-header">
+    <div>
+      <h2>Crear Venta</h2>
+      <a href="{% url 'sales' %}" class="back">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <title>regresar</title>
+          <path d="M10.05 16.94V12.94H18.97L19 10.93H10.05V6.94L5.05 11.94Z" />
+        </svg>
+        <span>
+          Regresar
+        </span>
+      </a>
+    </div>
+  </header>
+  <form action="{% url 'sales_create' %}" method="GET" class="form form-xl">
+    <div class="input-container">
+      <label for="client">Cliente</label>
+      <input id="client" type="text" name="client" autocomplete="off">
+      <p id="clienteWarning">Es necesario agregar un cliente</p>
+      <ul id="clients-autocomplete" class="suggetions"></ul>
+    </div>
+    <div class="input-container">
+      <label for="product">Producto</label>
+      <input id="product" type="text" name="product">
+      <ul id="products-autocomplete" class="suggetions"></ul>
+    </div>
+    <ul id="formTable" class="table">
+      <li class="table-header">
+        <ul class="">
+          <li>cantidad</li>
+          <li>producto</li>
+          <li>precio</li>
+          <li>descuento</li>
+          <li>remover</li>
+        </ul>
+      </li>
+      <li class="table-body">
+        <ul id="table-body-products" class="">
+        </ul>
+      </li>
+    </ul>
+  </form>
+  <section id="totals" class="total">
+    <div class="number-display">
+      <h2>descuento:</h2>
+      <p id="discount">0.00</p>
+    </div>
+    <div class="number-display">
+      <h2>subtotal:</h2>
+      <p id="subtotal">0.00</p>
+    </div>
+    <div class="number-display">
+      <h2>total:</h2>
+      <p id="total">0.00</p>
+    </div>
+    <button id="createSaleBtn" type="button" class="btn btn--add" disabled>Confirmar venta</button>
+  </section>
+  <section id="paymenthMethod" class="payment-container">
+    <form action="" method="POST" id="paymentModal" class="payment">
+      {% csrf_token %}
+      <div>
+        <label for="totalPay">Total a pagar:</label>
+        <input type="number" id="totalPay" disabled>
+      </div>
+      <div>
+        <label for="payment">Método de pago</label>
+        <select name="payment" id="payment">
+        <option value="">Seleccionar método</option>
+        <option value="transferencia">Transferencia</option>
+        <option value="efectivo">Efectivo</option>
+        <option value="credito">Tarjeta de crédito</option>
+        <option value="debito">Tarjeta de débito</option>
+      </select>
+      </div>
+      <div>
+        <label for="import">importe</label>
+        <input type="number" id="import" min="0">
+      </div>
+      <div>
+        <label for="change">cambio</label>
+        <input type="number" id="change" disabled>
+      </div>
+      <button id="confirmSale" type="submit" class="btn btn--add">crear venta</button>
+    </form>
+  </section>
+</main>
+{% endblock content %}
+{% block scripts %}
+<script src="{% static 'dashboard/js/create-sale.js' %}"></script>
+{% endblock scripts %}

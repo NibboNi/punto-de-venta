@@ -1,3 +1,6 @@
+from decimal import Decimal
+import json
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -514,3 +517,93 @@ def clients_manage(request, pk=None):
                "client_form": client_form, "legal_data_form": legal_data_form}
 
     return render(request, 'dashboard/clients/form.html', context)
+
+
+@login_required
+def sales(request):
+    if request.user.profile.type == "vendedor":
+        return redirect("dashboard")
+
+    register_is_open = False
+
+    if RegisterSession.objects.filter(user=request.user, closed_at__isnull=True).exists():
+        register_is_open = True
+
+    context = {"register_is_open": register_is_open}
+
+    return render(request, "dashboard/sales/read.html", context)
+
+
+@login_required
+def sales_create(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            client_id = int(data.get("client"))
+            total = Decimal(data.get("total"))
+            payment = Decimal(data.get("import"))
+            change = Decimal(data.get("change"))
+            payment_method = data.get("payment")
+            products = data.get("products", [])
+
+            register = RegisterSession.objects.filter(
+                user=request.user, closed_at__isnull=True).first()
+            client = Client.objects.get(id=client_id)
+
+            sale = Sale.objects.create(
+                register=register,
+                client=client,
+                total=total,
+                payment=payment,
+                payment_method=payment_method,
+                change=change
+            )
+
+            for item in products:
+                product_id = int(item.get("id"))
+                product_qty = int(item.get("qty", 1))
+                product_discount = Decimal(item.get("discount", 0))
+
+                product = Product.objects.get(id=product_id)
+                product.existence = product.existence - product_qty
+
+                SaleProduct.objects.create(
+                    sale=sale,
+                    product=product,
+                    quantity=product_qty,
+                    discount=product_discount
+                )
+
+            return JsonResponse({"message": "¡venta creada!"})
+
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=400)
+
+    return render(request, "dashboard/sales/create.html")
+
+
+@login_required
+def autocomplete_clients(request):
+    query = request.GET.get('c', '')
+    clients = Client.objects.filter(name__icontains=query)[
+        :10] if query else []
+    data = list(clients.values('id', 'name'))
+    return JsonResponse({'data': data})
+
+
+@login_required
+def autocomplete_products(request):
+    query = request.GET.get('p', '')
+    products = Product.objects.filter(name__icontains=query)[
+        :10] if query else []
+    data = list(products.values('id', 'name', "sale_price",
+                "existence", "existence_min"))
+    return JsonResponse({'data': data})
+
+
+@login_required
+def reports(request):
+    items = Sale.objects.all()
+    context = {"items": items, "title": "reporte"}
+
+    return render(request, "dashboard/reports/read.html", context)

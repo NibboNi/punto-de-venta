@@ -1,0 +1,10 @@
+{% extends "dashboard/list_view.html" %}
+{% load static %}
+{% block title %}Reportes de ventas{% endblock title %}
+{% block main_field %}Reporte{% endblock main_field %}
+{% block modal_msg %}
+<p id="modal-msg">¿Esta seguro de borrar este producto?</p>
+{% endblock modal_msg %}
+{% block delete_btn %}
+<a id="deleteBtn" href="{% url 'products_delete' 0 %}">Sí, borrar producto</a>
+{% endblock delete_btn %}

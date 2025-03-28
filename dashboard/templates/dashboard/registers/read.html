@@ -40,12 +40,16 @@
 {% endblock delete_btn %}
 {% block register_warn %}
 {% if messages %}
-<div class="modal">
+<div class="modal show">
   <p class="modal-msg">
     {% for message in messages %}
       <span class="modal-msg-text">{{message}}</span>
     {% endfor %}
   </p>
+  <span class="modal-timer"></span>
 </div>
 {% endif %}
 {% endblock register_warn %}
+{% block extra_scripts %}
+<script src="{% static 'dashboard/js/modal.js' %}"></script>
+{% endblock extra_scripts %}

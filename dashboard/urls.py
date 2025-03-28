@@ -40,4 +40,11 @@ urlpatterns = [
     path('clientes/crear/', clients_manage, name="clients_create"),
     path('clientes/editar/<int:pk>/', clients_manage, name="clients_edit"),
     path('clientes/borrar/<int:pk>/', clients_manage, name="clients_delete"),
+    path('ventas/', sales, name="sales"),
+    path('ventas/crear', sales_create, name="sales_create"),
+    path('autocomplete-clientes/', autocomplete_clients,
+         name="autocomplete_clients"),
+    path('autocomplete-productos/', autocomplete_products,
+         name="autocomplete_products"),
+    path('reportes/', reports, name="reports"),
 ]

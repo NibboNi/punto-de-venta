@@ -50,12 +50,18 @@
 
 .modal {
   padding: 2rem;
+  width: 90%;
+  max-width: 375px;
   position: absolute;
   top: 1rem;
   right: 1rem;
+  display: none;
   background-color: #0c0c0d;
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 1rem;
+  overflow: hidden;
+  animation: modal-fade 5s ease-in-out forwards;
+  z-index: 100;
 
   .modal-msg {
     display: flex;
@@ -64,5 +70,40 @@
     .modal-msg-text {
       font-size: 1.8rem;
     }
+  }
+
+  .modal-timer {
+    height: 0.25rem;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background-color: #155dfc;
+    transition: width 0.3s ease-in-out;
+    animation: modal-timer 5s ease-in-out forwards;
+  }
+}
+.modal.show {
+  display: block;
+  opacity: 1;
+}
+
+@keyframes modal-fade {
+  0% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes modal-timer {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
   }
 }

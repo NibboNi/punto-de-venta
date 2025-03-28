@@ -171,3 +171,32 @@ class RegisterSession(models.Model):
 
     def __str__(self):
         return self.register.name
+
+
+class Sale(models.Model):
+    register = models.ForeignKey(
+        RegisterSession, on_delete=models.CASCADE, verbose_name="caja")
+    client = models.ForeignKey(
+        Client, on_delete=models.CASCADE, verbose_name="cliente")
+    total = models.DecimalField(max_digits=10, decimal_places=2)
+    payment = models.DecimalField(
+        max_digits=10, decimal_places=2, verbose_name="importe")
+    payment_method = models.CharField(
+        max_length=50, verbose_name="método de pago")
+    change = models.DecimalField(
+        max_digits=10, decimal_places=2, verbose_name="cambio")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Venta - {self.created_at.strftime('%Y-%m-%d %H:%M:%S')}"
+
+
+class SaleProduct(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.IntegerField(verbose_name="cantidad")
+    discount = models.DecimalField(
+        max_digits=10, decimal_places=2, verbose_name="descuento")
+    sale = models.ForeignKey(Sale, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.product.name
