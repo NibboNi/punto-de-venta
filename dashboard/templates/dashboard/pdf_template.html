@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Reporte PDF</title>
+    <style>
+      body { font-family: Arial, sans-serif; }
+      h1 { color: navy; font-weight: 500; font-size: 24px; }
+      h1, h2, p, table {
+        margin: 0;
+        padding: 0;
+      }
+      table{ margin: 20px 0; }
+      th{
+        padding: 6px 0px 2px;
+        background-color: lightgrey;
+      }
+      td{
+        padding: 6px 4px 2px;
+        border-right: 1px solid #dedede;
+      }
+      .total{
+        text-align: right;
+        text-transform: capitalize;
+      }
+      .resaltado{
+        background-color: #eeeeee;
+      }
+    </style>
+</head>
+<body>
+    <div class="header">
+      <h1 class="no-margin">Reporte de Venta</h1>
+      <h2>Venta #{{ sale.id }}</>
+      <p>{{sale.created_at}}</p>
+      <p>{{sale.register.register.name}} - {{sale.register.user.username}}</p>
+      <p>Cliente: {{sale.client.name}}</p>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th>Precio unitario</th>
+          <th>Cantidad</th>
+          <th>Descuento</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for product in products %}
+          <tr class="{% cycle 'resaltado' '' %}">
+            <td>{{product.product.name}}</td>
+            <td>${{product.product.sale_price}}</td>
+            <td>{{product.quantity}}</td>
+            <td>{{product.discount}}%</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <div class="total">
+      <p>Total: ${{sale.total}}</p>
+      <p>Importe: ${{sale.payment}}</p>
+      <p>Cambio: ${{sale.change}}</p>
+      <p>Método de pago: {{sale.payment_method}}</p>
+    </div>
+</body>
+</html>

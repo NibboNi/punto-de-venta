@@ -1,6 +1,9 @@
+import django_excel as excel
+from django.template.loader import get_template
+from xhtml2pdf import pisa
 from decimal import Decimal
 import json
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -521,9 +524,6 @@ def clients_manage(request, pk=None):
 
 @login_required
 def sales(request):
-    if request.user.profile.type == "vendedor":
-        return redirect("dashboard")
-
     register_is_open = False
 
     if RegisterSession.objects.filter(user=request.user, closed_at__isnull=True).exists():
@@ -574,7 +574,7 @@ def sales_create(request):
                     discount=product_discount
                 )
 
-            return JsonResponse({"message": "¡venta creada!"})
+            return JsonResponse({"message": "¡venta creada!", "sale": sale.id})
 
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=400)
@@ -603,7 +603,85 @@ def autocomplete_products(request):
 
 @login_required
 def reports(request):
-    items = Sale.objects.all()
-    context = {"items": items, "title": "reporte"}
+    sales = Sale.objects.all().order_by("-id")
+    context = {"sales": sales}
 
     return render(request, "dashboard/reports/read.html", context)
+
+
+def sales_invoice(request, pk):
+    template_path = 'dashboard/pdf_template.html'
+    sale = Sale.objects.get(id=pk)
+    products = SaleProduct.objects.filter(sale=sale)
+
+    context = {'sale': sale, 'products': products}
+
+    template = get_template(template_path)
+    html = template.render(context)
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="reporte.pdf"'
+
+    pisa_status = pisa.CreatePDF(html, dest=response)
+
+    if pisa_status.err:
+        return HttpResponse('Ocurrió un error al generar el PDF', status=500)
+
+    return response
+
+
+def sales_csv(request, pk):
+    headers = ["ID Venta", "Fecha", "Caja", "Vendedor", "Cliente", "Total", "Pago",
+               "Cambio", "Método de Pago", "Producto", "Cantidad", "Descuento"]
+    data = [headers]
+
+    sale = Sale.objects.get(id=pk)
+    sale_products = SaleProduct.objects.filter(sale=sale)
+
+    first_row = True
+
+    if sale_products.exists():
+        for item in sale_products:
+            if first_row:
+                data.append([
+                    sale.id,
+                    sale.created_at.strftime("%Y-%m-%d %H:%M:%S"),
+                    sale.register.register.name,
+                    sale.register.user.username,
+                    sale.client.name if sale.client else "Cliente eliminado",
+                    sale.total,
+                    sale.payment,
+                    sale.change,
+                    sale.payment_method,
+                    item.product.name if item.product else "Producto eliminado",
+                    item.quantity,
+                    item.discount,
+                ])
+                first_row = False
+            else:
+                data.append([
+                    "", "", "", "", "", "", "", "", "",  # Celdas vacías para evitar repeticiones
+                    item.product.name if item.product else "Producto eliminado",
+                    item.quantity,
+                    item.discount,
+                ])
+    else:
+        # Si la venta no tiene productos
+        data.append([
+            sale.id,
+            sale.created_at.strftime("%Y-%m-%d %H:%M:%S"),
+            sale.register.register.name,
+            sale.register.user.username,
+            sale.client.name if sale.client else "Cliente eliminado",
+            sale.total,
+            sale.payment,
+            sale.change,
+            sale.payment_method,
+            "Sin productos",
+            "",
+            "",
+        ])
+
+    # Convertir los datos a un archivo Excel y enviarlo como respuesta
+    sheet = excel.pe.Sheet(data)
+    return excel.make_response(sheet, "xlsx", file_name=f"venta_{sale.id}.xlsx")

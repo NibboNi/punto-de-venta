@@ -25,6 +25,8 @@
       </div>
       {% if user.profile.type == "admin" %}
       {% block to_form %}{% endblock to_form %}
+      {% else %}
+      {% block to_form_seller %}{% endblock to_form_seller %}
       {% endif %}
     </header>
     {% if items %}

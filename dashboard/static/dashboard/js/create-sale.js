@@ -29,7 +29,7 @@ const sale = {
 let saleCreated = false;
 
 function search(type, query, url, searchEl, suggetionsEl) {
-  if (query.length > 1) {
+  if (query.length > 0) {
     fetch(url)
       .then((response) => response.json())
       .then((data) => {
@@ -262,6 +262,9 @@ confirmSaleBtn.addEventListener("click", (e) => {
       })
       .then((data) => {
         saleCreated = true;
+        modalPaymentMethod.disabled = true;
+        modalImport.disabled = true;
+
         const successBox = document.createElement("div");
         successBox.classList.add("success-checkmark");
         const successIcon = document.createElement("div");
@@ -290,7 +293,9 @@ confirmSaleBtn.addEventListener("click", (e) => {
 
         paymentModal.appendChild(successMessage);
 
-        const ticketButton = document.createElement("button");
+        const ticketButton = document.createElement("a");
+        ticketButton.href = `/panel/ventas/ticket/pdf/${data.sale}/`;
+        ticketButton.target = "_blank";
         const ticketText = document.createElement("span");
         ticketText.textContent = "Imprimir ticket";
 

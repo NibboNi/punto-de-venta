@@ -12,6 +12,17 @@
 </div>
 {% endif %}
 {% endblock to_form %}
+{% block to_form_seller %}
+<a id="test" href="{% if register_is_open %}{% url 'sales_create' %}{% else %}#{% endif %}" class="btn btn--add">Crear venta</a>
+{% if not register_is_open %}
+<div class="modal">
+  <p class="modal-msg">
+    <span class="modal-msg-text">Debe tener una caja abierta para crear una venta</span>
+  </p>
+  <span class="modal-timer"></span>
+</div>
+{% endif %}
+{% endblock to_form_seller %}
 {% block main_field %}Medida{% endblock main_field %}
 {% block edit %}
 <a href="{% url 'sizes_edit' i.id %}" class="list-table-btn">

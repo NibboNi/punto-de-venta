@@ -43,6 +43,7 @@ urlpatterns = [
     path('ventas/', sales, name="sales"),
     path('ventas/crear/', sales_create, name="sales_create"),
     path('ventas/ticket/pdf/<int:pk>/', sales_invoice, name="sales_invoice"),
+    path('ventas/ticket/csv/<int:pk>/', sales_csv, name="sales_csv"),
     path('autocomplete-clientes/', autocomplete_clients,
          name="autocomplete_clients"),
     path('autocomplete-productos/', autocomplete_products,
