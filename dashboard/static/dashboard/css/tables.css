@@ -88,7 +88,7 @@
       width: 100%;
       th {
         padding: 1rem;
-        border-right: 1px solid rgba(255, 255, 255, 0.2);
+        border-right: 1px solid rgba(255, 255, 255, 0.02);
 
         &:last-child {
           border-right: none;
@@ -105,7 +105,7 @@
       }
       td {
         padding: 1rem;
-        border-right: 1px solid rgba(255, 255, 255, 0.2);
+        border-right: 1px solid rgba(255, 255, 255, 0.02);
         vertical-align: top;
 
         &:last-child {

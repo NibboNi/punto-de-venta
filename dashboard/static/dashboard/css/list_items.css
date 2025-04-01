@@ -45,6 +45,32 @@
     border-color: oklch(0.925 0.084 155.995);
   }
 }
+.btn.btn--filter {
+  margin-right: auto;
+  padding: 0.6rem 2.4rem;
+  color: white;
+  background-color: #155dfc;
+  border-color: #2b7fff;
+
+  &:hover {
+    background-color: #1447e6;
+  }
+}
+.btn.btn--fixed {
+  margin-left: auto;
+  margin-bottom: 5rem;
+  width: fit-content;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+
+  svg {
+    fill: white;
+    height: 2.4rem;
+    width: 2.4rem;
+  }
+}
 @media (min-width: 768px) {
   .btn.btn--add {
     padding: 0.8rem 2.4rem;

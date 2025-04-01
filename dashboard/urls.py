@@ -49,4 +49,5 @@ urlpatterns = [
     path('autocomplete-productos/', autocomplete_products,
          name="autocomplete_products"),
     path('reportes/', reports, name="reports"),
+    path('reportes/ticket/csv/', export_sales_csv, name="export_sales"),
 ]

@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth import logout
 from django.utils import timezone
+from django.utils.dateparse import parse_date
 from django.contrib import messages
 from .models import *
 from .forms import *
@@ -604,7 +605,50 @@ def autocomplete_products(request):
 @login_required
 def reports(request):
     sales = Sale.objects.all().order_by("-id")
-    context = {"sales": sales}
+    registers = Register.objects.all()
+    clients = Client.objects.all()
+    users = User.objects.all()
+
+    register_id = request.GET.get("register")
+    seller_id = request.GET.get("seller")
+    client_id = request.GET.get("client")
+    payment_method = request.GET.get("payment_method")
+    date_start = request.GET.get("date_start")
+    date_end = request.GET.get("date_end")
+    download_all = False
+
+    if register_id:
+        download_all = True
+        sales = sales.filter(register__register_id=register_id)
+    if seller_id:
+        download_all = True
+        sales = sales.filter(register__user_id=seller_id)
+    if client_id:
+        download_all = True
+        sales = sales.filter(client=client_id)
+    if payment_method:
+        download_all = True
+        sales = sales.filter(payment_method=payment_method)
+    if date_start and date_end:
+        download_all = True
+        date_start_parsed = parse_date(date_start)
+        date_end_parsed = parse_date(date_end)
+
+        if date_start_parsed and date_end_parsed:
+            download_all = True
+            sales = sales.filter(created_at__date__range=[
+                                 date_start_parsed, date_end_parsed])
+
+    payments_methods = [
+        {"value": "", "label": "todos los método"},
+        {"value": "transferencia", "label": "transferencia"},
+        {"value": "efectivo", "label": "efectivo"},
+        {"value": "tarjeta de crédito", "label": "tarjeta de crédito"},
+        {"value": "tarjeta de débito", "label": "tarjeta de débito"}
+    ]
+
+    context = {"sales": sales, "registers": registers,
+               "clients": clients, "users": users, "payment_methods": payments_methods, "download_all": download_all}
 
     return render(request, "dashboard/reports/read.html", context)
 
@@ -660,13 +704,12 @@ def sales_csv(request, pk):
                 first_row = False
             else:
                 data.append([
-                    "", "", "", "", "", "", "", "", "",  # Celdas vacías para evitar repeticiones
+                    "", "", "", "", "", "", "", "", "",
                     item.product.name if item.product else "Producto eliminado",
                     item.quantity,
                     item.discount,
                 ])
     else:
-        # Si la venta no tiene productos
         data.append([
             sale.id,
             sale.created_at.strftime("%Y-%m-%d %H:%M:%S"),
@@ -682,6 +725,87 @@ def sales_csv(request, pk):
             "",
         ])
 
-    # Convertir los datos a un archivo Excel y enviarlo como respuesta
     sheet = excel.pe.Sheet(data)
     return excel.make_response(sheet, "xlsx", file_name=f"venta_{sale.id}.xlsx")
+
+
+@login_required
+def export_sales_csv(request):
+    headers = ["ID Venta", "Fecha", "Caja", "Vendedor", "Cliente", "Total", "Pago",
+               "Cambio", "Método de Pago", "Producto", "Cantidad", "Descuento"]
+    data = [headers]
+
+    # Filtrar las ventas según los parámetros
+    sales = Sale.objects.all().order_by("-id")
+
+    register_id = request.GET.get("register")
+    seller_id = request.GET.get("seller")
+    client_id = request.GET.get("client")
+    payment_method = request.GET.get("payment_method")
+    date_start = request.GET.get("date_start")
+    date_end = request.GET.get("date_end")
+
+    if register_id:
+        sales = sales.filter(register__register_id=register_id)
+    if seller_id:
+        sales = sales.filter(register__user_id=seller_id)
+    if client_id:
+        sales = sales.filter(client=client_id)
+    if payment_method:
+        sales = sales.filter(payment_method=payment_method)
+    if date_start and date_end:
+        date_start_parsed = parse_date(date_start)
+        date_end_parsed = parse_date(date_end)
+        if date_start_parsed and date_end_parsed:
+            sales = sales.filter(created_at__date__range=[
+                                 date_start_parsed, date_end_parsed])
+
+    # Generar los datos para el archivo Excel
+    for sale in sales:
+        sale_products = SaleProduct.objects.filter(sale=sale)
+        first_row = True
+
+        if sale_products.exists():
+            for item in sale_products:
+                if first_row:
+                    data.append([
+                        sale.id,
+                        sale.created_at.strftime("%Y-%m-%d %H:%M:%S"),
+                        sale.register.register.name,
+                        sale.register.user.username,
+                        sale.client.name if sale.client else "Cliente eliminado",
+                        sale.total,
+                        sale.payment,
+                        sale.change,
+                        sale.payment_method,
+                        item.product.name if item.product else "Producto eliminado",
+                        item.quantity,
+                        item.discount,
+                    ])
+                    first_row = False
+                else:
+                    data.append([
+                        "", "", "", "", "", "", "", "", "",
+                        item.product.name if item.product else "Producto eliminado",
+                        item.quantity,
+                        item.discount,
+                    ])
+        else:
+            data.append([
+                sale.id,
+                sale.created_at.strftime("%Y-%m-%d %H:%M:%S"),
+                sale.register.register.name,
+                sale.register.user.username,
+                sale.client.name if sale.client else "Cliente eliminado",
+                sale.total,
+                sale.payment,
+                sale.change,
+                sale.payment_method,
+                "Sin productos",
+                "",
+                "",
+            ])
+
+    # Crear y retornar el archivo Excel
+    sheet = excel.pe.Sheet(data)
+    return excel.make_response(sheet, "xlsx", file_name="ventas_filtradas.xlsx")
