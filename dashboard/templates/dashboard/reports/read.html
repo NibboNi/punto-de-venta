@@ -42,9 +42,13 @@
             <label for="seller">vendedor</label>
             <select name="seller" id="seller">
               <option value="">todos los vendedores</option>
-              {% for u in users %}
-              <option value="{{u.id}}">{{u.username}}</option>
-              {% endfor %}
+              {% if request.user.profile.type == "admin" %}
+                {% for u in users %}
+                  <option value="{{u.id}}">{{u.username}}</option>
+                  {% endfor %}
+              {% else %}
+                <option value="{{request.user.id}}">{{request.user.username}}</option>
+              {% endif %}
             </select>
           </div>
           <div>

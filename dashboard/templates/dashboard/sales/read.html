@@ -23,22 +23,14 @@
 </div>
 {% endif %}
 {% endblock to_form_seller %}
-{% block main_field %}Medida{% endblock main_field %}
-{% block edit %}
-<a href="{% url 'sizes_edit' i.id %}" class="list-table-btn">
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-    <title>editar {{title}}</title>
-    <path d="M21.7,13.35L20.7,14.35L18.65,12.3L19.65,11.3C19.86,11.09 20.21,11.09 20.42,11.3L21.7,12.58C21.91,12.79 21.91,13.14 21.7,13.35M12,18.94L18.06,12.88L20.11,14.93L14.06,21H12V18.94M12,14C7.58,14 4,15.79 4,18V20H10V18.11L14,14.11C13.34,14.03 12.67,14 12,14M12,4A4,4 0 0,0 8,8A4,4 0 0,0 12,12A4,4 0 0,0 16,8A4,4 0 0,0 12,4Z" />
-  </svg>
-</a>
-{% endblock edit %}
-{% block modal_msg %}
-<p id="modal-msg">¿Esta seguro de borrar esta medida?</p>
-{% endblock modal_msg %}
-{% block delete_btn %}
-<a id="deleteBtn" href="{% url 'sizes_delete' 0 %}" >Sí, borrar medida</a>
-{% endblock delete_btn %}
-{% block extra_scripts %}
-<script src="{% static 'dashboard/js/sales.js' %}"></script>
-<script src="{% static 'dashboard/js/modal.js' %}"></script>
-{% endblock extra_scripts %}
+{% block extra_content %}
+  {% if sales_exist %}
+    <a href="{% url 'reports' %}" class="link">
+      <span>Ver reporte de ventas</span>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <title>Ver reporte de ventas</title>
+        <path d="M14 16.94V12.94H5.08L5.05 10.93H14V6.94L19 11.94Z" />
+      </svg>
+    </a>
+  {% endif %}
+{% endblock extra_content %}

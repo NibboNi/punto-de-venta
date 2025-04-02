@@ -526,11 +526,13 @@ def clients_manage(request, pk=None):
 @login_required
 def sales(request):
     register_is_open = False
+    sales_exist = Sale.objects.exists()
 
     if RegisterSession.objects.filter(user=request.user, closed_at__isnull=True).exists():
         register_is_open = True
 
-    context = {"register_is_open": register_is_open}
+    context = {"register_is_open": register_is_open,
+               "sales_exist": sales_exist}
 
     return render(request, "dashboard/sales/read.html", context)
 

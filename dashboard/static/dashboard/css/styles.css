@@ -316,3 +316,16 @@ a {
     font-weight: 600;
   }
 }
+
+.link {
+  margin: 0 auto;
+  width: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  svg {
+    width: 3.2rem;
+    fill: white;
+  }
+}
