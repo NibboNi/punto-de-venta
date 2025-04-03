@@ -821,7 +821,7 @@ def sales_csv(request, pk):
 @login_required
 def export_sales_csv(request):
     headers = ["ID Venta", "Fecha", "Caja", "Vendedor", "Cliente", "Total", "Pago",
-               "Cambio", "Método de Pago", "Producto", "Cantidad", "Descuento"]
+               "Cambio", "Método de Pago"]
     data = [headers]
 
     # Filtrar las ventas según los parámetros
@@ -851,49 +851,17 @@ def export_sales_csv(request):
 
     # Generar los datos para el archivo Excel
     for sale in sales:
-        sale_products = SaleProduct.objects.filter(sale=sale)
-        first_row = True
-
-        if sale_products.exists():
-            for item in sale_products:
-                if first_row:
-                    data.append([
-                        sale.id,
-                        sale.created_at.strftime("%Y-%m-%d %H:%M:%S"),
-                        sale.register.register.name,
-                        sale.register.user.username,
-                        sale.client.name if sale.client else "Cliente eliminado",
-                        sale.total,
-                        sale.payment,
-                        sale.change,
-                        sale.payment_method,
-                        item.product.name if item.product else "Producto eliminado",
-                        item.quantity,
-                        item.discount,
-                    ])
-                    first_row = False
-                else:
-                    data.append([
-                        "", "", "", "", "", "", "", "", "",
-                        item.product.name if item.product else "Producto eliminado",
-                        item.quantity,
-                        item.discount,
-                    ])
-        else:
-            data.append([
-                sale.id,
-                sale.created_at.strftime("%Y-%m-%d %H:%M:%S"),
-                sale.register.register.name,
-                sale.register.user.username,
-                sale.client.name if sale.client else "Cliente eliminado",
-                sale.total,
-                sale.payment,
-                sale.change,
-                sale.payment_method,
-                "Sin productos",
-                "",
-                "",
-            ])
+        data.append([
+            sale.id,
+            sale.created_at.strftime("%Y-%m-%d %H:%M:%S"),
+            sale.register.register.name,
+            sale.register.user.username,
+            sale.client.name if sale.client else "Cliente eliminado",
+            sale.total,
+            sale.payment,
+            sale.change,
+            sale.payment_method,
+        ])
 
     # Crear y retornar el archivo Excel
     sheet = excel.pe.Sheet(data)
