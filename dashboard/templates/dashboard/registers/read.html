@@ -2,9 +2,100 @@
 {% load static %}
 {% block extra_styles %}
 <link rel="stylesheet" href="{% static 'dashboard/css/registers.css' %}">
+<link rel="stylesheet" href="{% static 'dashboard/css/forms.css' %}">
 {% endblock extra_styles %}
 {% block title %}Cajas{% endblock title %}
 {% block to_form %}<a href="{% url 'registers_create' %}" class="btn btn--add">Registrar caja</a>{% endblock to_form %}
+{% block table %}
+  <form action="{% url 'registers' %}" method="GET" class="form form-xl form-filters">
+    <button type="submit" class="btn btn--filter">Filtrar</button>
+    <fieldset>
+      <div>
+        <label for="key">clave</label>
+        <select name="key" id="key">
+          <option value="">todas las cajas</option>
+          {% for r in registers %}
+            <option value="{{r.key}}">{{r.key}}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label for="register">caja</label>
+        <select name="register" id="register">
+          <option value="">todas las cajas</option>
+          {% for r in registers %}
+            <option value="{{r.id}}">{{r}}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label for="state">estado</label>
+        <select name="state" id="state">
+          {% for state in registers_states %}
+            <option value="{{state.value}}">{{state.label}}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </fieldset>
+  </form>
+  {% if registers %}
+    <article class="table-container">
+      <table class="table">
+        <thead>
+          <tr>
+            {% if valid_key %}
+              <th>Clave</th>
+            {% endif %}
+            <th>Caja</th>
+            <th>Estado</th>
+            {% if user.profile.type == "admin" %}
+              <th>Acciones</th>
+            {% endif %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in registers %}
+            <tr>
+              {% if valid_key %}
+                <td>{{r.key}}</td>
+              {% endif %}
+              <td>
+                {{r.name}}
+              </td>
+              <td>
+                {% if r.state == "c" %}
+                  <a href="{% url 'registers_open' r.id %}" class="toggle-state-btn">
+                    <span>Cerrada</span><span>Abrir</span>
+                  </a>
+                {% else %}
+                  <a href="{% url 'registers_close' r.id %}" class="toggle-state-btn">
+                    <span>Abierta</span><span>Cerrar</span>
+                  </a>
+                {% endif %}
+              </td>
+              {% if user.profile.type == "admin" %}
+                <td class="actions">
+                  <button id="{{r.id}}" type="button">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                      <title>eliminar {{title}}</title>
+                      <path d="M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19M8.46,11.88L9.87,10.47L12,12.59L14.12,10.47L15.53,11.88L13.41,14L15.53,16.12L14.12,17.53L12,15.41L9.88,17.53L8.47,16.12L10.59,14L8.46,11.88M15.5,4L14.5,3H9.5L8.5,4H5V6H19V4H15.5Z" />
+                    </svg>
+                  </button>
+                  <a href="{% url 'registers_edit' r.id %}">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                      <title>editar {{title}}</title>
+                      <path d="M9.86 21.43L9 22L6 20L3 22V3H21V10.2C20.1 9.82 19 10 18.24 10.75L9.86 19.13V21.43M11.86 19.96L18 13.83L20.03 15.87L13.9 22H11.86V19.96M20.39 12.15C20.37 12.13 20.34 12.1 20.31 12.09C20.12 11.96 19.86 11.97 19.69 12.13L19.67 12.15L18.69 13.13L20.73 15.17L21.71 14.19C21.91 14 21.91 13.67 21.71 13.47L20.39 12.15Z" />
+                    </svg>
+                  </a>
+                </td>
+              {% endif %}
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </article>
+  {% endif %}
+{% endblock table %}
 {% block main_field %}Caja{% endblock main_field %}
 {% block headers %}
 <li class="secondary-field">

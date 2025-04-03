@@ -230,8 +230,30 @@ def sizes_manage(request, pk=None):
 
 @login_required
 def registers(request):
-    items = Register.objects.all()
-    context = {"items": items, "title": "caja"}
+    valid_key = False
+    registers = Register.objects.all()
+
+    register_id = request.GET.get("register")
+    register_key = request.GET.get("key")
+    register_state = request.GET.get("state")
+
+    if register_id:
+        registers = registers.filter(id=register_id)
+    if register_key:
+        valid_key = True
+        registers = registers.filter(key=register_key)
+    if register_state:
+        registers = registers.filter(state=register_state)
+
+    registers_states = [
+        {"value": "", "label": "cualquier estado"},
+        {"value": "c", "label": "cerrada"},
+        {"value": "a", "label": "abierta"},
+    ]
+
+    context = {"registers": registers, "title": "caja",
+               "registers_states": registers_states, "valid_key": valid_key}
+
     return render(request, "dashboard/registers/read.html", context)
 
 
