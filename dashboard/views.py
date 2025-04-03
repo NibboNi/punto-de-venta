@@ -153,8 +153,17 @@ def departments(request):
     if request.user.profile.type == "vendedor":
         return redirect("dashboard")
 
-    items = Department.objects.all()
-    context = {"items": items, "title": "departamento"}
+    departments = Department.objects.all()
+    filtered_departments = departments
+
+    department = request.GET.get("name")
+
+    if department:
+        filtered_departments = filtered_departments.filter(name=department)
+
+    context = {"departments": departments, "title": "departamento",
+               "filtered_departments": filtered_departments}
+
     return render(request, 'dashboard/departments/read.html', context)
 
 
