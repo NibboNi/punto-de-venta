@@ -395,8 +395,37 @@ def products(request):
     if request.user.profile.type == "vendedor":
         return redirect("dashboard")
 
-    items = Product.objects.all()
-    context = {"items": items, "title": "producto"}
+    products = Product.objects.all()
+    brands = Brand.objects.all()
+    departments = Department.objects.all()
+    sizes = Size.objects.all()
+
+    filtered_products = products
+    valid_brand = False
+    valid_department = False
+    valid_size = False
+
+    product_name = request.GET.get("name")
+    product_brand = request.GET.get("brand")
+    product_department = request.GET.get("department")
+    product_size = request.GET.get("size")
+
+    if product_name:
+        filtered_products = filtered_products.filter(name=product_name)
+    if product_brand:
+        valid_brand = True
+        filtered_products = filtered_products.filter(brand__name=product_brand)
+    if product_department:
+        valid_department = True
+        filtered_products = filtered_products.filter(
+            department__name=product_department)
+    if product_size:
+        valid_size = True
+        filtered_products = filtered_products.filter(size__name=product_size)
+
+    context = {"products": products, "title": "producto", "brands": brands, "departments": departments, "sizes": sizes,
+               "filtered_products": filtered_products, "valid_brand": valid_brand, "valid_department": valid_department, "valid_size": valid_size}
+
     return render(request, "dashboard/products/read.html", context)
 
 
