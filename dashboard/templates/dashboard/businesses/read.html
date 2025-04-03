@@ -1,6 +1,125 @@
 {% extends "dashboard/list_view.html" %}
+{% load static %}
+{% block extra_styles %}
+<link rel="stylesheet" href="{% static 'dashboard/css/forms.css' %}">
+{% endblock extra_styles %}
 {% block title %}Negocios{% endblock title %}
 {% block to_form %}<a href="{% url 'businesses_create' %}" class="btn btn--add">Registrar negocio</a>{% endblock to_form %}
+{% block table %}
+  <form action="{% url 'businesses' %}" method="GET" class="form form-xl form-filters">
+    <button type="submit" class="btn btn--filter">Filtrar</button>
+    <fieldset>
+      <div>
+        <label for="name">nombre</label>
+        <select name="name" id="name">
+          <option value="">todos los negocios</option>
+          {% for b in businesses %}
+            <option value="{{b.name}}">{{b.name}}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label for="state">estado</label>
+        <select name="state" id="state">
+          <option value="">todos los estados</option>
+          {% for b in businesses %}
+            <option value="{{b.legal_data.address.state}}">{{b.legal_data.address.state}}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label for="city">ciudad</label>
+        <select name="city" id="city">
+          <option value="">todas las ciudades</option>
+          {% for b in businesses %}
+            <option value="{{b.legal_data.address.city}}">{{b.legal_data.address.city}}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label for="rfc">RFC</label>
+        <select name="rfc" id="rfc">
+          <option value="">todos los RFC</option>
+          {% for b in businesses %}
+            <option value="{{b.legal_data.rfc}}">{{b.legal_data.rfc}}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label for="company_name">Razón Social</label>
+        <select name="company_name" id="company_name">
+          <option value="">todas las razones sociales</option>
+          {% for b in businesses %}
+            <option value="{{b.legal_data.company_name}}">{{b.legal_data.company_name}}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </fieldset>
+  </form>
+  {% if filtered_businesses %}
+    <article class="table-container">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Negocio</th>
+            {% if valid_rfc %}
+              <th>RFC</th>
+            {% endif %}
+            {% if valid_company_name %}
+              <th>Razón Social</th>
+            {% endif %}
+            {% if valid_state %}
+              <th>Estado</th>
+            {% endif %}
+            {% if valid_city %}
+              <th>Ciudad</th>
+            {% endif %}
+            {% if user.profile.type == "admin" %}
+              <th>Acciones</th>
+            {% endif %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for b in filtered_businesses %}
+            <tr>
+              <td>
+                {{b.name}}
+              </td>
+              {% if valid_rfc %}
+                <td>{{b.legal_data.rfc}}</td>
+              {% endif %}
+              {% if valid_company_name %}
+                <td>{{b.legal_data.company_name}}</td>
+              {% endif %}
+              {% if valid_state %}
+                <td>{{b.legal_data.address.state}}</td>
+              {% endif %}
+              {% if valid_city %}
+                <td>{{b.legal_data.address.city}}</td>
+              {% endif %}
+              {% if user.profile.type == "admin" %}
+                <td class="actions">
+                  <button id="{{b.id}}" type="button" class="delete-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                      <title>eliminar {{title}}</title>
+                      <path d="M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19M8.46,11.88L9.87,10.47L12,12.59L14.12,10.47L15.53,11.88L13.41,14L15.53,16.12L14.12,17.53L12,15.41L9.88,17.53L8.47,16.12L10.59,14L8.46,11.88M15.5,4L14.5,3H9.5L8.5,4H5V6H19V4H15.5Z" />
+                    </svg>
+                  </button>
+                  <a href="{% url 'businesses_edit' b.id %}">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                      <title>editar {{title}}</title>
+                      <path d="M9.86 21.43L9 22L6 20L3 22V3H21V10.2C20.1 9.82 19 10 18.24 10.75L9.86 19.13V21.43M11.86 19.96L18 13.83L20.03 15.87L13.9 22H11.86V19.96M20.39 12.15C20.37 12.13 20.34 12.1 20.31 12.09C20.12 11.96 19.86 11.97 19.69 12.13L19.67 12.15L18.69 13.13L20.73 15.17L21.71 14.19C21.91 14 21.91 13.67 21.71 13.47L20.39 12.15Z" />
+                    </svg>
+                  </a>
+                </td>
+              {% endif %}
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </article>
+  {% endif %}
+{% endblock table %}
 {% block main_field %}Negocio{% endblock main_field %}
 {% block edit %}
 <a href="{% url 'businesses_edit' i.id %}" class="list-table-btn">

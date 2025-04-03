@@ -466,8 +466,39 @@ def businesses(request):
     if request.user.profile.type == "vendedor":
         return redirect("dashboard")
 
-    items = Business.objects.all()
-    context = {"items": items, "title": "negocio"}
+    businesses = Business.objects.all()
+
+    filtered_businesses = businesses
+    valid_state = False
+    valid_city = False
+    valid_rfc = False
+    valid_company_name = False
+
+    state = request.GET.get("state")
+    city = request.GET.get("city")
+    rfc = request.GET.get("rfc")
+    company_name = request.GET.get("company_name")
+
+    if state:
+        valid_state = True
+        filtered_businesses = filtered_businesses.filter(
+            legal_data__address__state=state)
+    if city:
+        valid_city = True
+        filtered_businesses = filtered_businesses.filter(
+            legal_data__address__city=city)
+    if rfc:
+        valid_rfc = True
+        filtered_businesses = filtered_businesses.filter(
+            legal_data__rfc=rfc)
+    if company_name:
+        valid_company_name = True
+        filtered_businesses = filtered_businesses.filter(
+            legal_data__company_name=company_name)
+
+    context = {"businesses": businesses, "title": "negocio",
+               "filtered_businesses": filtered_businesses, "valid_state": valid_state, "valid_city": valid_city, "valid_rfc": valid_rfc, "valid_company_name": valid_company_name}
+
     return render(request, "dashboard/businesses/read.html", context)
 
 
