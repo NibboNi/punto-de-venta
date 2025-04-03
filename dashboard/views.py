@@ -113,8 +113,17 @@ def brands(request):
     if request.user.profile.type == "vendedor":
         return redirect("dashboard")
 
-    items = Brand.objects.all()
-    context = {"items": items, "title": "marca"}
+    brands = Brand.objects.all()
+    filtered_brands = brands
+
+    brand = request.GET.get("name")
+
+    if brand:
+        filtered_brands = filtered_brands.filter(name=brand)
+
+    context = {"brands": brands, "title": "marca",
+               "filtered_brands": filtered_brands}
+
     return render(request, 'dashboard/brands/read.html', context)
 
 
