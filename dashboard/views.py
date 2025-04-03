@@ -480,8 +480,46 @@ def clients(request):
     if request.user.profile.type == "vendedor":
         return redirect("dashboard")
 
-    items = Client.objects.all()
-    context = {"items": items, "title": "cliente"}
+    valid_email = False
+    valid_rfc = False
+    valid_company_name = False
+    valid_state = False
+    valid_city = False
+
+    clients = Client.objects.all()
+    filtered_clients = clients
+
+    client_name = request.GET.get("name")
+    client_email = request.GET.get("email")
+    client_rfc = request.GET.get("rfc")
+    client_company_name = request.GET.get("company_name")
+    client_state = request.GET.get("state")
+    client_city = request.GET.get("city")
+
+    if client_name:
+        filtered_clients = filtered_clients.filter(name=client_name)
+    if client_email:
+        valid_email = True
+        filtered_clients = filtered_clients.filter(contact__email=client_email)
+    if client_rfc:
+        valid_rfc = True
+        filtered_clients = filtered_clients.filter(legal_data__rfc=client_rfc)
+    if client_company_name:
+        valid_company_name = True
+        filtered_clients = filtered_clients.filter(
+            legal_data__company_name=client_company_name)
+    if client_state:
+        valid_state = True
+        filtered_clients = filtered_clients.filter(
+            legal_data__address__state=client_state)
+    if client_city:
+        valid_city = True
+        filtered_clients = filtered_clients.filter(
+            legal_data__address__city=client_city)
+
+    context = {"clients": clients, "title": "cliente",
+               "filtered_clients": filtered_clients, "valid_email": valid_email, "valid_rfc": valid_rfc, "valid_company_name": valid_company_name, "valid_state": valid_state, "valid_city": valid_city}
+
     return render(request, "dashboard/clients/read.html", context)
 
 
