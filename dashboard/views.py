@@ -193,8 +193,17 @@ def sizes(request):
     if request.user.profile.type == "vendedor":
         return redirect("dashboard")
 
-    items = Size.objects.all()
-    context = {"items": items, "title": "medida"}
+    sizes = Size.objects.all()
+    filtered_sizes = sizes
+
+    size = request.GET.get("name")
+
+    if size:
+        filtered_sizes = filtered_sizes.filter(name=size)
+
+    context = {"sizes": sizes, "title": "medida",
+               "filtered_sizes": filtered_sizes}
+
     return render(request, 'dashboard/sizes/read.html', context)
 
 
