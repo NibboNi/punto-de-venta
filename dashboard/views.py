@@ -541,7 +541,7 @@ def clients_manage(request, pk=None):
         client = Client.objects.get(id=pk)
         contact = client.contact
         legal_data = client.legal_data
-        address = client.address
+        address = client.legal_data.address
 
         if "borrar" in request.path:
             client.delete()
