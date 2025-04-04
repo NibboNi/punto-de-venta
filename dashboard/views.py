@@ -28,8 +28,28 @@ def users(request):
     if request.user.profile.type == "vendedor":
         return redirect("dashboard")
 
-    items = User.objects.all()
-    context = {"items": items, "title": "usuario"}
+    users = User.objects.all()
+    filtered_users = users
+
+    roles = [
+        {"value": "admin", "label": "Administrador"},
+        {"value": "vendedor", "label": "Vendedor"},
+    ]
+
+    user = request.GET.get("name")
+    role = request.GET.get("role")
+
+    valid_role = False
+
+    if user:
+        filtered_users = filtered_users.filter(id=user)
+    if role:
+        valid_role = True
+        filtered_users = filtered_users.filter(profile__type=role)
+
+    context = {"users": users, "title": "usuario",
+               "filtered_users": filtered_users, "roles": roles, "valid_role": valid_role}
+
     return render(request, 'dashboard/users/read.html', context)
 
 

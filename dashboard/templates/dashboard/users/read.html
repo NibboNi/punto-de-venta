@@ -1,6 +1,84 @@
 {% extends "dashboard/list_view.html" %}
+{% load static %}
+{% block extra_styles %}
+<link rel="stylesheet" href="{% static 'dashboard/css/registers.css' %}">
+<link rel="stylesheet" href="{% static 'dashboard/css/forms.css' %}">
+{% endblock extra_styles %}
 {% block title %}Usuarios{% endblock title %}
 {% block to_form %}<a href="{% url 'users_create' %}" class="btn btn--add">Registrar usuario</a>{% endblock to_form %}
+{% block table %}
+  <form action="{% url 'users' %}" method="GET" class="form form-xl form-filters">
+    <button type="submit" class="btn btn--filter">Filtrar</button>
+    <fieldset>
+      <div>
+        <label for="name">Nombre</label>
+        <select name="name" id="name">
+          <option value="">todos los usuarios</option>
+          {% for u in users %}
+            {% if u.username != "admin" %}
+              <option value="{{u.id}}">{{u.username}}</option>
+            {% endif %}
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label for="role">rol</label>
+        <select name="role" id="role">
+          <option value="">cualquier rol</option>
+          {% for r in roles %}
+            <option value="{{r.value}}">{{r.label}}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </fieldset>
+  </form>
+  {% if filtered_users %}
+    <article class="table-container">
+      <table class="table">
+        <thead>
+            <th>Usuario</th>
+            {% if valid_role %}
+              <th>Rol</th>
+            {% endif %}
+            {% if user.profile.type == "admin" %}
+              <th>Acciones</th>
+            {% endif %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for u in filtered_users %}
+            {% if u.username != "admin" %}
+              <tr>
+                <td>
+                  {{u.username}}
+                </td>
+                {% if valid_role %}
+                  <td>{{u.profile.type}}</td>
+                {% endif %}
+                {% if user.profile.type == "admin" %}
+                    <td class="actions">
+                      <button id="{{u.id}}" type="button" class="delete-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                          <title>eliminar {{title}}</title>
+                          <path d="M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19M8.46,11.88L9.87,10.47L12,12.59L14.12,10.47L15.53,11.88L13.41,14L15.53,16.12L14.12,17.53L12,15.41L9.88,17.53L8.47,16.12L10.59,14L8.46,11.88M15.5,4L14.5,3H9.5L8.5,4H5V6H19V4H15.5Z" />
+                        </svg>
+                      </button>
+                      <a href="{% url 'users_edit' u.id %}">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                          <title>editar {{title}}</title>
+                          <path d="M9.86 21.43L9 22L6 20L3 22V3H21V10.2C20.1 9.82 19 10 18.24 10.75L9.86 19.13V21.43M11.86 19.96L18 13.83L20.03 15.87L13.9 22H11.86V19.96M20.39 12.15C20.37 12.13 20.34 12.1 20.31 12.09C20.12 11.96 19.86 11.97 19.69 12.13L19.67 12.15L18.69 13.13L20.73 15.17L21.71 14.19C21.91 14 21.91 13.67 21.71 13.47L20.39 12.15Z" />
+                        </svg>
+                      </a>
+                    </td>
+                {% endif %}
+              </tr>
+            {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </article>
+  {% endif %}
+{% endblock table %}
 {% block main_field %}Usuario{% endblock main_field %}
 {% block edit %}
 <a href="{% url 'users_edit' i.id %}" class="list-table-btn">
